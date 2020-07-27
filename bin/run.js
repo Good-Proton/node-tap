@@ -803,10 +803,7 @@ const runBeforeAfter = (options, env, tap, processDB) => {
 
   if (options.after) {
     /* istanbul ignore next - run after istanbul's report */
-    signalExit(() => {
-      console.log('after');
-      beforeAfter(env, options.after)
-    }, { alwaysLast: true })
+    signalExit(() => beforeAfter(env, options.after), { alwaysLast: true })
   }
 }
 
