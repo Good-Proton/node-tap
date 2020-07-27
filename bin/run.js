@@ -4,7 +4,7 @@ const opener = require('opener')
 const node = process.execPath
 const fs = require('fs')
 const fg = require('foreground-child')
-const {spawn, spawnSync} = require('child_process')
+const { spawn, spawnSync } = require('child_process')
 const nycBin = require.resolve(
   'nyc/' + require('nyc/package.json').bin.nyc
 )
@@ -20,19 +20,19 @@ const esm = require.resolve('esm')
 const jsx = require.resolve('./jsx.js')
 const mkdirp = require('mkdirp').sync
 const which = require('which')
-const {ProcessDB} = require('istanbul-lib-processinfo')
+const { ProcessDB } = require('istanbul-lib-processinfo')
 const rimraf = require('rimraf').sync
-const {Repl} = require('../lib/repl.js')
+const { Repl } = require('../lib/repl.js')
 
 
 /* istanbul ignore next */
 const debug = process.env.TAP_DEBUG === '1'
   || /\btap\b/.test(process.env.NODE_DEBUG) ? (...args) => {
-    const {format} = require('util')
+    const { format } = require('util')
     const prefix = `TAP ${process.pid} RUN: `
     const msg = format(...args).trim()
     console.error(prefix + msg.split('\n').join(`\n${prefix}`))
-  } : () => {}
+  } : () => { }
 
 const filesFromTest = exports.filesFromTest = (index, testFile) => {
   const set = index.externalIds[testFile]
@@ -201,11 +201,11 @@ const mainAsync = async options => {
   // this is only testable by escaping from the covered environment
   /* istanbul ignore next */
   if (fs.existsSync('.nyc_output') &&
-      options._.length === 0 &&
-      (options['coverage-report'] &&
-        options._.explicit.has('coverage-report') ||
+    options._.length === 0 &&
+    (options['coverage-report'] &&
+      options._.explicit.has('coverage-report') ||
       options['check-coverage'] &&
-        options._.explicit.has('check-coverage')))
+      options._.explicit.has('check-coverage')))
     return runCoverageReportOnly(options)
 
   try {
@@ -248,8 +248,8 @@ const mainAsync = async options => {
 /* istanbul ignore next */
 const nycReporter = options =>
   options['coverage-report'] === false ? ['--silent']
-  : options['coverage-report'].map(cr =>
-    cr === 'html' ? '--reporter=lcov' : `--reporter=${cr}`)
+    : options['coverage-report'].map(cr =>
+      cr === 'html' ? '--reporter=lcov' : `--reporter=${cr}`)
 
 const defaultNycExcludes = [
   'coverage/**',
@@ -286,16 +286,16 @@ const runNyc = (cmd, programArgs, options, spawnOpts) => {
     '--cache=true',
     '--branches=' + branches,
     '--watermarks.branches=' + branches,
-    '--watermarks.branches=' + (branches + (100 - branches)/2),
+    '--watermarks.branches=' + (branches + (100 - branches) / 2),
     '--functions=' + functions,
     '--watermarks.functions=' + functions,
-    '--watermarks.functions=' + (functions + (100 - functions)/2),
+    '--watermarks.functions=' + (functions + (100 - functions) / 2),
     '--lines=' + lines,
     '--watermarks.lines=' + lines,
-    '--watermarks.lines=' + (lines + (100 - lines)/2),
+    '--watermarks.lines=' + (lines + (100 - lines) / 2),
     '--statements=' + statements,
     '--watermarks.statements=' + statements,
-    '--watermarks.statements=' + (statements + (100 - statements)/2),
+    '--watermarks.statements=' + (statements + (100 - statements) / 2),
     ...reporter,
     '--extension=.js',
     '--extension=.jsx',
@@ -328,7 +328,7 @@ const runNyc = (cmd, programArgs, options, spawnOpts) => {
 const runCoverageReportOnly = options => {
   runNyc(['report'], [], options)
   if (process.env.COVERALLS_REPO_TOKEN ||
-      process.env.__TAP_COVERALLS_TEST__) {
+    process.env.__TAP_COVERALLS_TEST__) {
     pipeToCoveralls()
   }
 }
@@ -336,7 +336,7 @@ const runCoverageReportOnly = options => {
 /* istanbul ignore next */
 const pipeToCoveralls = async options => {
   const reporter = spawn(node, [nycBin, 'report', '--reporter=text-lcov'], {
-    stdio: [ 0, 'pipe', 2 ]
+    stdio: [0, 'pipe', 2]
   })
 
   const bin = process.env.__TAP_COVERALLS_TEST__
@@ -367,7 +367,7 @@ const respawnWithCoverage = options => {
 const openHtmlCoverageReport = (options, code, signal) => {
   opener('coverage/lcov-report/index.html')
   if (signal) {
-    setTimeout(() => {}, 200)
+    setTimeout(() => { }, 200)
     process.kill(process.pid, signal)
   } else if (code) {
     process.exitCode = code
@@ -473,7 +473,7 @@ const readSaveFile = options => {
       const s = fs.readFileSync(options.save, 'utf8').trim()
       if (s)
         return s.split('\n')
-    } catch (er) {}
+    } catch (er) { }
 
   return null
 }
@@ -506,7 +506,7 @@ const saveFails = (options, tap) => {
     else
       try {
         fs.writeFileSync(options.save, fails.join('\n') + '\n')
-      } catch (er) {}
+      } catch (er) { }
   }
 
   tap.on('bailout', reason => {
@@ -526,34 +526,34 @@ const filterFiles = exports.filterFiles = (files, options, parallelOk) =>
   files.filter(file =>
     path.basename(file) === 'tap-parallel-ok' ?
       ((parallelOk[path.resolve(path.dirname(file))] = true), false)
-    : path.basename(file) === 'tap-parallel-not-ok' ?
-      parallelOk[path.resolve(path.dirname(file))] = false
-    // don't include the --before and --after scripts as files,
-    // so they're not run as tests if they would be found normally.
-    // This allows test/setup.js and test/teardown.js for example.
-    : filesMatch(file, options.before) ? false
-    : filesMatch(file, options.after) ? false
-    : options.saved && options.saved.length ? onSavedList(options.saved, file)
-    : options.changed ? options.changedFilter(file)
-    : true
+      : path.basename(file) === 'tap-parallel-not-ok' ?
+        parallelOk[path.resolve(path.dirname(file))] = false
+        // don't include the --before and --after scripts as files,
+        // so they're not run as tests if they would be found normally.
+        // This allows test/setup.js and test/teardown.js for example.
+        : filesMatch(file, options.before) ? false
+          : filesMatch(file, options.after) ? false
+            : options.saved && options.saved.length ? onSavedList(options.saved, file)
+              : options.changed ? options.changedFilter(file)
+                : true
   )
 
 // check if the file is on the list, or if it's a parent dir of
 // any items that are on the list.
 const onSavedList = (saved, file) =>
   saved.indexOf(file) !== -1 ? true
-  : saved.some(f => f.indexOf(file + '/') === 0)
+    : saved.some(f => f.indexOf(file + '/') === 0)
 
 const isParallelOk = (parallelOk, file) => {
   const dir = path.resolve(path.dirname(file))
   return (dir in parallelOk) ? parallelOk[dir]
     : exists(dir + '/tap-parallel-ok')
-    ? parallelOk[dir] = true
-    : exists(dir + '/tap-parallel-not-ok')
-    ? parallelOk[dir] = false
-    : dir.length >= process.cwd().length
-    ? isParallelOk(parallelOk, dir)
-    : true
+      ? parallelOk[dir] = true
+      : exists(dir + '/tap-parallel-not-ok')
+        ? parallelOk[dir] = false
+        : dir.length >= process.cwd().length
+          ? isParallelOk(parallelOk, dir)
+          : true
 }
 
 const getEnv = options => options['test-env'].reduce((env, kv) => {
@@ -564,7 +564,7 @@ const getEnv = options => options['test-env'].reduce((env, kv) => {
   else
     env[key] = split.join('=')
   return env
-}, {...process.env})
+}, { ...process.env })
 
 // the test that checks this escapes from NYC, so it'll never show up
 /* istanbul ignore next */
@@ -649,6 +649,15 @@ const runAllFiles = (options, env, tap, processDB) => {
       if (options.flow)
         options['node-arg'].push('-r', flowNode)
 
+      let command = node;
+      let manualInstrumentArgs = [];
+      if (/\.e(\.spec)?\.(jsx?|tsx?|[mc]?js)$/.test(file)) {
+        command = 'electron'
+        if (options.coverage) {
+          manualInstrumentArgs.push('-r', require.resolve('tap/bin/babel-instrument.js'));
+        }
+      }
+
       if (options.ts && /\.tsx?$/.test(file)) {
         debug('ts file', file)
         const compilerOpts = JSON.stringify({
@@ -661,29 +670,32 @@ const runAllFiles = (options, env, tap, processDB) => {
         }
         const args = [
           '-r', tsNode,
+          // ...manualInstrumentArgs, // TODO: implement ts with inline instrumenting
           ...options['node-arg'],
           file,
           ...options['test-arg']
         ]
-        tap.spawn(node, args, opt, file)
+        tap.spawn(command, args, opt, file)
       } else if (options.jsx && /\.jsx$/.test(file)) {
         debug('jsx file', file)
         const args = [
+          ...manualInstrumentArgs,
           ...(options['node-arg']),
           jsx,
           file,
           ...(options['test-arg']),
         ]
-        tap.spawn(node, args, opt, file)
+        tap.spawn(command, args, opt, file)
       } else if (/\.jsx$|\.tsx?$|\.[mc]?js$/.test(file)) {
         debug('js file', file)
         const args = [
           ...(options.esm ? ['-r', esm] : []),
+          ...manualInstrumentArgs,
           ...options['node-arg'],
           file,
           ...options['test-arg']
         ]
-        tap.spawn(node, args, opt, file)
+        tap.spawn(command, args, opt, file)
       } else if (/\.tap$/.test(file)) {
         debug('tap file', file)
         tap.spawn('cat', [file], opt, file)
@@ -754,16 +766,18 @@ const runTests = options => {
 
   /* istanbul ignore next */
   if (process.env.COVERALLS_REPO_TOKEN ||
-      process.env.__TAP_COVERALLS_TEST__) {
+    process.env.__TAP_COVERALLS_TEST__) {
     tap.teardown(() => pipeToCoveralls())
   }
 
   tap.end()
   debug('called tap.end()')
+
+  tap.on('end', () => setTimeout(() => process.exit(0), 100));
 }
 
 const beforeAfter = (env, script) => {
-  const {status, signal} = spawnSync(process.execPath, [script], {
+  const { status, signal } = spawnSync(process.execPath, [script], {
     env,
     stdio: 'inherit',
   })
@@ -789,7 +803,10 @@ const runBeforeAfter = (options, env, tap, processDB) => {
 
   if (options.after) {
     /* istanbul ignore next - run after istanbul's report */
-    signalExit(() => beforeAfter(env, options.after), { alwaysLast: true })
+    signalExit(() => {
+      console.log('after');
+      beforeAfter(env, options.after)
+    }, { alwaysLast: true })
   }
 }
 
