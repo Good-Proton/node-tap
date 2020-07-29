@@ -772,8 +772,6 @@ const runTests = options => {
 
   tap.end()
   debug('called tap.end()')
-
-  tap.on('end', () => setTimeout(() => process.exit(0), 100));
 }
 
 const beforeAfter = (env, script) => {
