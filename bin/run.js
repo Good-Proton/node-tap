@@ -650,11 +650,13 @@ const runAllFiles = (options, env, tap, processDB) => {
         options['node-arg'].push('-r', flowNode)
 
       let command = node;
-      let manualInstrumentArgs = [];
+      let electronArgs = [];
       if (/\.e(\.spec)?\.(jsx?|tsx?|[mc]?js)$/.test(file)) {
         command = 'electron'
-        if (options.coverage) {
-          manualInstrumentArgs.push('-r', require.resolve('tap/bin/babel-instrument.js'));
+        if (options.coverage && !/\.tsx?$/.test(file)) { // TODO: implement ts with inline instrumenting
+          electronArgs.push('-r', require.resolve('tap/bin/electron-instrument.js'));
+        } else {
+          electronArgs.push('-r', require.resolve('tap/bin/electron.js'));
         }
       }
 
@@ -670,7 +672,7 @@ const runAllFiles = (options, env, tap, processDB) => {
         }
         const args = [
           '-r', tsNode,
-          // ...manualInstrumentArgs, // TODO: implement ts with inline instrumenting
+          // ...electronArgs, 
           ...options['node-arg'],
           file,
           ...options['test-arg']
@@ -679,7 +681,7 @@ const runAllFiles = (options, env, tap, processDB) => {
       } else if (options.jsx && /\.jsx$/.test(file)) {
         debug('jsx file', file)
         const args = [
-          ...manualInstrumentArgs,
+          ...electronArgs,
           ...(options['node-arg']),
           jsx,
           file,
@@ -690,7 +692,7 @@ const runAllFiles = (options, env, tap, processDB) => {
         debug('js file', file)
         const args = [
           ...(options.esm ? ['-r', esm] : []),
-          ...manualInstrumentArgs,
+          ...electronArgs,
           ...options['node-arg'],
           file,
           ...options['test-arg']
