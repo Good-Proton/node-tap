@@ -654,9 +654,7 @@ const runAllFiles = (options, env, tap, processDB) => {
       if (/\.e(\.spec)?\.(jsx?|tsx?|[mc]?js)$/.test(file)) {
         command = 'electron'
         if (options.coverage && !/\.tsx?$/.test(file)) { // TODO: implement ts with inline instrumenting
-          electronArgs.push('-r', require.resolve('tap/bin/electron-instrument.js'));
-        } else {
-          electronArgs.push('-r', require.resolve('tap/bin/electron.js'));
+          electronArgs.push('-r', require.resolve('tap/bin/electron-instrument'));
         }
       }
 
@@ -672,7 +670,7 @@ const runAllFiles = (options, env, tap, processDB) => {
         }
         const args = [
           '-r', tsNode,
-          // ...electronArgs, 
+          ...electronArgs, 
           ...options['node-arg'],
           file,
           ...options['test-arg']
