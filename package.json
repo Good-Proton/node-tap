@@ -98,11 +98,6 @@
     "bin/jack.js",
     "lib/*.js"
   ],
-  "bundleDependencies": [
-    "ink",
-    "treport",
-    "@types/react"
-  ],
   "funding": {
     "url": "https://github.com/sponsors/isaacs"
   }
