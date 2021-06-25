@@ -31,6 +31,7 @@ const clean = string => cleanStacks(string)
   .replace(/\| +/g, '| ')
   .replace(/-+\|/g, '-|')
   .replace(/\|-+/g, '|-')
+  .replace(/source: >/g, 'source: |')
   // two that show up in config dump snapshots
   .replace(/snapshot: (true|false)\n/, '')
   .replace(/cli-tests-[0-9]+/g, 'cli-tests')
