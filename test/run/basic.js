@@ -44,7 +44,7 @@ t.test('--help', t => {
 t.test('--nyc-help', t => {
   run(['--nyc-help'], null, (er, o, e) => {
     t.equal(er, null)
-    t.match(o, /\nOptions:\n/)
+    t.match(o, /\n(Options|Опции):\n/)
     t.end()
   })
 })
