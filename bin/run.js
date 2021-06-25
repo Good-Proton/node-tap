@@ -672,6 +672,11 @@ const runAllFiles = (options, env, tap, processDB) => {
 
       if (options.flow && flowNode)
         options['node-arg'].push('-r', flowNode)
+      
+      let bin = node
+      if (!process.versions.electron && file.match(/\.(?:e|electron)(?:\.spec)?\.(?:jsx?|tsx?|[mc]?js)$/)) {
+        bin = require('electron')
+      }
 
       if (options.ts && tsNode && /\.tsx?$/.test(file)) {
         debug('typescript file', file)
@@ -689,7 +694,7 @@ const runAllFiles = (options, env, tap, processDB) => {
           file,
           ...options['test-arg']
         ]
-        tap.spawn(node, args, opt, file)
+        tap.spawn(bin, args, opt, file)
       } else if (options.jsx && /\.jsx$/.test(file)) {
         debug('jsx file', file)
         const args = [
@@ -698,7 +703,7 @@ const runAllFiles = (options, env, tap, processDB) => {
           file,
           ...(options['test-arg']),
         ]
-        tap.spawn(node, args, opt, file)
+        tap.spawn(bin, args, opt, file)
       } else if (/\.jsx$|\.tsx?$|\.[mc]?js$/.test(file)) {
         debug('js file', file)
         /* istanbul ignore next - version specific behavior */
@@ -711,7 +716,7 @@ const runAllFiles = (options, env, tap, processDB) => {
           file,
           ...options['test-arg']
         ]
-        tap.spawn(node, args, opt, file)
+        tap.spawn(bin, args, opt, file)
       } else if (/\.tap$/.test(file)) {
         debug('tap file', file)
         tap.spawn('cat', [file], opt, file)
