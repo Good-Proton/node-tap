@@ -88,13 +88,19 @@
     "test-ignore": "/(^|/)cli-tests-[0-9]+/",
     "check-coverage": true
   },
-  "nyc": {
-    "include": [
-      "bin/run.js",
-      "bin/jsx.js",
-      "lib/*.js",
-      "bin/jack.js"
-    ]
+  "devDependencies": {
+    "browserify": "^16.2.3",
+    "karma": "^3.1.1",
+    "karma-browserify": "^5.2.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-firefox-launcher": "^1.1.0",
+    "karma-mocha": "^1.3.0",
+    "karma-spec-reporter": "0.0.32",
+    "mocha": "^5.0.1",
+    "standard": "^12.0.1",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.1.6",
+    "which": "^1.3.1"
   },
   "files": [
     "bin/run.js",
