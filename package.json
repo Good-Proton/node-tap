@@ -20,7 +20,10 @@
     "node": ">=10"
   },
   "dependencies": {
+    "@babel/core": "^7.14.6",
+    "@babel/register": "^7.14.5",
     "@types/react": "^16.9.23",
+    "babel-plugin-istanbul": "^6.0.0",
     "chokidar": "^3.3.0",
     "coveralls": "^3.0.11",
     "findit": "^2.0.0",
@@ -109,6 +112,7 @@
   },
   "files": [
     "settings.js",
+    "bin/instrument-electron-register.js",
     "bin/run.js",
     "bin/jsx.js",
     "bin/jack.js",

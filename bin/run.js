@@ -676,6 +676,9 @@ const runAllFiles = (options, env, tap, processDB) => {
       let bin = node
       if (!process.versions.electron && file.match(/\.(?:e|electron)(?:\.spec)?\.(?:jsx?|tsx?|[mc]?js)$/)) {
         bin = require('electron')
+        if (options.coverage) {
+          options['node-arg'].push('-r', require.resolve(`${__dirname}/../bin/instrument-electron-register`))
+        }
       }
 
       if (options.ts && tsNode && /\.tsx?$/.test(file)) {
