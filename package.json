@@ -1,6 +1,6 @@
 {
   "name": "tap",
-  "version": "15.0.9",
+  "version": "15.0.9-electron.1",
   "author": "Isaac Z. Schlueter <i@izs.me> (http://blog.izs.me)",
   "description": "A Test-Anything-Protocol library for JavaScript",
   "homepage": "http://www.node-tap.org/",
@@ -117,11 +117,6 @@
     "bin/jsx.js",
     "bin/jack.js",
     "lib"
-  ],
-  "bundleDependencies": [
-    "ink",
-    "treport",
-    "@types/react"
   ],
   "funding": {
     "url": "https://github.com/sponsors/isaacs"
