@@ -23,8 +23,6 @@ import { testIsSerial } from './test-is-serial.js'
 const regExpEscape = (s: string) =>
   s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
 
-const node = process.execPath
-
 export const run = async (args: string[], config: LoadedConfig) => {
   // timeout in ms for test subprocesses, has a default
   // so it'll always be set to a number.
@@ -171,7 +169,7 @@ export const run = async (args: string[], config: LoadedConfig) => {
         '\n',
       )
       const buffered = !testIsSerial(file) && t.jobs > 1
-      const args = [...argv, file, ...testArgs]
+      let args = [...argv, file, ...testArgs]
       // support stuff like `tap <(...)` or raw .tap files.
       const st = await stat(file)
       const raw =
@@ -179,6 +177,18 @@ export const run = async (args: string[], config: LoadedConfig) => {
         st.isBlockDevice() ||
         st.isFIFO() ||
         file.toLowerCase().endsWith('.tap')
+      let bin = process.execPath
+      if (!process.versions.electron && file.match(/\.(?:e|electron)(?:\.spec)?\.(?:jsx?|tsx?|[mc]?js)$/)) {
+        args = [
+          '--require',
+          'tsx/cjs',
+          ...argv.filter(arg => !/--loader=.+?@tapjs.*?$/.test(arg)),
+          file,
+          ...testArgs,
+        ];
+        // @ts-ignore
+        ({ default: bin } = await import('electron'));
+      }
       return raw ?
           t.sub<TapFile, TapFileOpts>(TapFile, {
             at: null,
@@ -186,7 +196,7 @@ export const run = async (args: string[], config: LoadedConfig) => {
             buffered,
             filename: file,
           })
-        : t.spawn(node, args, {
+        : t.spawn(bin, args, {
             at: null,
             stack: '',
             buffered,
